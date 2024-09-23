@@ -1,0 +1,5 @@
+topic:
+  hubs:
+    name: telemetry.hubs.v1
+  sensors:
+    name: telemetry.sensors.v1
