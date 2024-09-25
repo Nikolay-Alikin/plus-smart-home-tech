@@ -14,13 +14,15 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class KafkaSenderImpl implements KafkaSender {
 
+    private final KafkaConfig kafkaConfig;
+
     @Override
     public void send(SpecificRecordBase record, String topic) {
 
         ProducerRecord<String, SpecificRecordBase> producerRecord = new ProducerRecord<>(topic, record);
 
         try (KafkaProducer<String, SpecificRecordBase> producer = new KafkaProducer<>(
-                KafkaConfig.getProducerConfig())) {
+                kafkaConfig.getProducerConfig())) {
             producer.send(producerRecord);
             log.debug(" [{}] Событие {} отправлено ", topic, record);
         } catch (Exception e) {

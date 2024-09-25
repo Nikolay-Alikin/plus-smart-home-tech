@@ -20,7 +20,7 @@ public class HubService implements TransmitService<HubEvent> {
     @Qualifier("hubRecordBuilder")
     private final RecordBuilder<HubEvent> recordBuilder;
 
-    @Value("${topic.hubs.name}")
+    @Value("${kafka.topic.hubs.name}")
     private String topic;
 
 

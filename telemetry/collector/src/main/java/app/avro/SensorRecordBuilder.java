@@ -1,13 +1,20 @@
 package app.avro;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import app.avro.handler.sensor.SensorEventHandler;
+import app.avro.handler.sensor.SensorHandlerFactory;
+import app.avro.handler.sensor.impl.ClimateSensorHandlerSensor;
+import app.avro.handler.sensor.impl.LightSensorHandlerSensor;
+import app.avro.handler.sensor.impl.MotionSensorHandlerSensor;
+import app.avro.handler.sensor.impl.SwitchSensorHandlerSensor;
+import app.avro.handler.sensor.impl.TemperatureSensorHandlerSensor;
 import app.model.sensor.event.SensorEvent;
 import app.model.sensor.event.impl.ClimateSensorEvent;
 import app.model.sensor.event.impl.LightSensorEvent;
 import app.model.sensor.event.impl.MotionSensorEvent;
 import app.model.sensor.event.impl.SwitchSensorEvent;
 import app.model.sensor.event.impl.TemperatureSensorEvent;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.avro.specific.SpecificRecordBase;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.kafka.telemetry.event.ClimateSensorAvro;
@@ -42,81 +49,37 @@ public class SensorRecordBuilder implements RecordBuilder<SensorEvent> {
 
 
     private LightSensorAvro toLightSensorRecord(SensorEvent sensorEvent) {
-        LightSensorEvent lightSensorEvent;
-        if (sensorEvent instanceof LightSensorEvent) {
-            lightSensorEvent = (LightSensorEvent) sensorEvent;
-        } else {
-            log.error("Невозможно привести событие={} к LightSensorEvent", sensorEvent);
-            throw new ClassCastException("Невозможно привести событие к LightSensorEvent");
-        }
-        LightSensorAvro sensor = new LightSensorAvro();
-        sensor.setLinkQuality(lightSensorEvent.getLinkQuality());
-        sensor.setLuminosity(lightSensorEvent.getLuminosity());
-
-        return sensor;
+        LightSensorHandlerSensor handler = (LightSensorHandlerSensor) getHandler(sensorEvent);
+        return handler.handleEvent((LightSensorEvent) sensorEvent);
     }
 
     private ClimateSensorAvro toClimateSensorRecord(SensorEvent sensorEvent) {
-        ClimateSensorEvent climateSensorEvent;
-        if (sensorEvent instanceof ClimateSensorEvent) {
-            climateSensorEvent = (ClimateSensorEvent) sensorEvent;
-        } else {
-            log.error("Невозможно привести событие={} к ClimateSensorEvent", sensorEvent);
-            throw new ClassCastException("Невозможно привести событие к ClimateSensorEvent");
-        }
-        ClimateSensorAvro sensor = new ClimateSensorAvro();
-        sensor.setTemperatureC(climateSensorEvent.getTemperatureC());
-        sensor.setHumidity(climateSensorEvent.getHumidity());
-        sensor.setCo2Level(climateSensorEvent.getCo2Level());
-
-        return sensor;
+        ClimateSensorHandlerSensor handler = (ClimateSensorHandlerSensor) getHandler(sensorEvent);
+        return handler.handleEvent((ClimateSensorEvent) sensorEvent);
     }
 
     private MotionSensorAvro toMotionSensorRecord(SensorEvent sensorEvent) {
-        MotionSensorEvent motionSensorEvent;
-        if (sensorEvent instanceof MotionSensorEvent) {
-            motionSensorEvent = (MotionSensorEvent) sensorEvent;
-        } else {
-            log.error("Невозможно привести событие={} к MotionSensorEvent", sensorEvent);
-            throw new ClassCastException("Невозможно привести событие к MotionSensorEvent");
-        }
-        MotionSensorAvro sensor = new MotionSensorAvro();
-        sensor.setLinkQuality(motionSensorEvent.getLinkQuality());
-        sensor.setMotion(motionSensorEvent.isMotion());
-        sensor.setVoltage(motionSensorEvent.getVoltage());
-
-        return sensor;
+        MotionSensorHandlerSensor handler = (MotionSensorHandlerSensor) getHandler(sensorEvent);
+        return handler.handleEvent((MotionSensorEvent) sensorEvent);
     }
 
     private SwitchSensorAvro toSwitchSensorRecord(SensorEvent sensorEvent) {
-        SwitchSensorEvent switchSensorEvent;
-        if (sensorEvent instanceof SwitchSensorEvent) {
-            switchSensorEvent = (SwitchSensorEvent) sensorEvent;
-        } else {
-            log.error("Невозможно привести событие={} к SwitchSensorEvent", sensorEvent);
-            throw new ClassCastException("Невозможно привести событие к SwitchSensorEvent");
-        }
-
-        SwitchSensorAvro sensor = new SwitchSensorAvro();
-        sensor.setState(switchSensorEvent.isState());
-
-        return sensor;
+        SwitchSensorHandlerSensor handler = (SwitchSensorHandlerSensor) getHandler(sensorEvent);
+        return handler.handleEvent((SwitchSensorEvent) sensorEvent);
     }
 
     private TemperatureSensorAvro toTemperatureSensorRecord(SensorEvent sensorEvent) {
-        TemperatureSensorEvent temperatureSensorEvent;
-        if (sensorEvent instanceof TemperatureSensorEvent) {
-            temperatureSensorEvent = (TemperatureSensorEvent) sensorEvent;
-        } else {
-            log.error("Невозможно привести событие={} к TemperatureSensorEvent", sensorEvent);
-            throw new ClassCastException("Невозможно привести событие к TemperatureSensorEvent");
+        TemperatureSensorHandlerSensor handler = (TemperatureSensorHandlerSensor) getHandler(sensorEvent);
+        return handler.handleEvent((TemperatureSensorEvent) sensorEvent);
+    }
+
+    @SuppressWarnings("rawtypes")
+    private SensorEventHandler getHandler(SensorEvent sensorEvent) {
+        SensorEventHandler handler = SensorHandlerFactory.getHandler(sensorEvent.getClass());
+        if (handler == null) {
+            log.error("Неизвестный тип события={}", sensorEvent);
+            throw new IllegalArgumentException("Неизвестный тип события");
         }
-        TemperatureSensorAvro sensor = new TemperatureSensorAvro();
-        sensor.setId(sensorEvent.getId());
-        sensor.setHubId(sensorEvent.getHubId());
-        sensor.setTimestamp(sensorEvent.getTimestamp());
-        sensor.setTemperatureC(temperatureSensorEvent.getTemperatureC());
-        sensor.setTemperatureF(temperatureSensorEvent.getTemperatureF());
-        return sensor;
+        return handler;
     }
 }

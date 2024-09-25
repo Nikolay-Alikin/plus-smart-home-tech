@@ -20,7 +20,7 @@ public class SensorService implements TransmitService<SensorEvent> {
     @Qualifier("sensorRecordBuilder")
     private final RecordBuilder<SensorEvent> recordBuilder;
 
-    @Value("${topic.sensors.name}")
+    @Value("${kafka.topic.sensors.name}")
     private String topic;
 
     @Override
