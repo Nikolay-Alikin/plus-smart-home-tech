@@ -19,7 +19,6 @@ public class SnapShotService {
         if (snapshot.getSensorsState().containsKey(event.getId())) {
             SensorStateAvro oldState = snapshot.getSensorsState().get(event.getId());
             if (oldState.getTimestamp().isAfter(event.getTimestamp())) {
-                //TODO: непонятно как сравнить oldState.getData() и   event.getPayload()
                 return Optional.empty();
             }
         }
