@@ -8,8 +8,4 @@ public class SensorEventDeserializer extends GeneralAvroDeserializer<SensorEvent
     public SensorEventDeserializer() {
         super(SensorEventAvro.class);
     }
-
-    public SensorEventDeserializer(Class<SensorEventAvro> targetType) {
-        super(targetType);
-    }
 }
