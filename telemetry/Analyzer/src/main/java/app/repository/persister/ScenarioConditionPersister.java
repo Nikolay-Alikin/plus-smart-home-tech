@@ -1,7 +1,6 @@
 package app.repository.persister;
 
 import app.model.entity.ScenarioCondition;
-import app.model.entity.Sensor;
 import app.repository.ScenarioConditionRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

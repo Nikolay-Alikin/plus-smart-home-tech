@@ -28,9 +28,12 @@ public class ActionConditionPersister {
     private final ScenarioActionRepository scenarioActionRepository;
     private final ScenarioConditionRepository scenarioConditionRepository;
 
-
     public void save(Map<Scenario, List<ActionSensorConditionDto>> scenarioMap) {
         Scenario scenario = scenarioMap.keySet().iterator().next();
+
+        scenarioRepository.findByHubIdAndName(scenario.getHubId(), scenario.getName())
+                .ifPresent(scenario1 -> remove(scenario1.getHubId(), scenario1.getName()));
+
         List<ActionSensorConditionDto> dtos = scenarioMap.values().stream().findFirst()
                 .orElseThrow();
         List<Action> actions = dtos.stream()

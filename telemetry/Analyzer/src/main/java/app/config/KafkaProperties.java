@@ -10,10 +10,10 @@ import lombok.Setter;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.VoidDeserializer;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
 
 @Setter
-@Component
+@Configuration
 @RequiredArgsConstructor
 public class KafkaProperties {
 
@@ -21,12 +21,13 @@ public class KafkaProperties {
     private Properties hubEventProperties;
     @Getter
     private Properties snapshotsProperties;
-
     @Value("${kafka.bootstrapServers}")
     private String bootstrapServers;
     @Value("${kafka.commit}")
     private String autoCommitIntervalMs;
-
+    @Getter
+    @Value("${kafka.consumeAttemptTimeout}")
+    private Long consumeAttemptTimeout;
 
     @PostConstruct
     public void init() {
@@ -41,7 +42,7 @@ public class KafkaProperties {
                 put(ConsumerConfig.GROUP_ID_CONFIG, "hub");
             }
         };
-        //hubEvent
+        //snapshotEvent
         snapshotsProperties = new Properties() {
             {
                 put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
