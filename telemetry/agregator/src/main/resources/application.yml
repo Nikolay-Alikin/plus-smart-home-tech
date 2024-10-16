@@ -1,0 +1,9 @@
+server:
+  port: 8082
+
+kafka:
+  bootstrapServers: localhost:9092
+  topic:
+    name:
+     consume: telemetry.sensors.v1
+     produce: telemetry.snapshots.v1

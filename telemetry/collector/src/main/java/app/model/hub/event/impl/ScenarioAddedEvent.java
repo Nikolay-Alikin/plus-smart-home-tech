@@ -37,7 +37,7 @@ public class ScenarioAddedEvent extends HubEvent {
             int value
     ) {
 
-        private enum Type {
+        public enum Type {
             MOTION,
             SWITCH,
             HUMIDITY,
@@ -46,7 +46,7 @@ public class ScenarioAddedEvent extends HubEvent {
             TEMPERATURE,
         }
 
-        private enum Operation {
+        public enum Operation {
             EQUALS,
             LOWER_THAN,
             GREATER_THAN
@@ -59,7 +59,7 @@ public class ScenarioAddedEvent extends HubEvent {
             String value
     ) {
 
-        private enum Type {
+        public enum Type {
             INVERSE,
             ACTIVATE,
             SET_VALUE,
