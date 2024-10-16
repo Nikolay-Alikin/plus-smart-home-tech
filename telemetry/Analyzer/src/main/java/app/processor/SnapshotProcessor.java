@@ -1,7 +1,6 @@
-package app.processor.impl;
+package app.processor;
 
 import app.config.KafkaProperties;
-import app.processor.Processor;
 import app.service.HubService;
 import java.time.Duration;
 import java.util.List;
@@ -14,39 +13,41 @@ import org.apache.kafka.common.errors.WakeupException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.kafka.telemetry.event.HubEventAvro;
+import ru.yandex.practicum.kafka.telemetry.event.SensorsSnapshotAvro;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class HubEventProcessor implements Processor {
+public class SnapshotProcessor implements Runnable {
 
-    private static final Duration CONSUME_ATTEMPT_TIMEOUT = Duration.ofMillis(2000);
-
-    @Qualifier("eventService")
-    private final HubService<HubEventAvro> hubService;
+    @Qualifier("snapshotService")
+    private final HubService<SensorsSnapshotAvro> hubService;
     private final KafkaProperties kafkaProperties;
 
-    @Value("${kafka.topic.hub.name}")
+    @Value("${kafka.topic.snapshot.name}")
     private String topic;
 
     @Override
     public void run() {
-        try (KafkaConsumer<Void, HubEventAvro> consumer = new KafkaConsumer<>(
-                kafkaProperties.getHubEventProperties())) {
+        try (KafkaConsumer<Void, SensorsSnapshotAvro> consumer = new KafkaConsumer<>(
+                kafkaProperties.getSnapshotsProperties())) {
             Runtime.getRuntime().addShutdownHook(new Thread(consumer::wakeup));
 
             consumer.subscribe(List.of(topic));
 
             while (true) {
-                ConsumerRecords<Void, HubEventAvro> records = consumer.poll(CONSUME_ATTEMPT_TIMEOUT);
-                for (ConsumerRecord<Void, HubEventAvro> record : records) {
-                    hubService.process(record.value());
+                ConsumerRecords<Void, SensorsSnapshotAvro> records = consumer.poll(
+                        Duration.ofMillis(kafkaProperties.getConsumeAttemptTimeout()));
+                if (!records.isEmpty()) {
+                    for (ConsumerRecord<Void, SensorsSnapshotAvro> record : records) {
+                        hubService.process(record.value());
+                    }
                 }
+                consumer.commitSync();
             }
         } catch (WakeupException ignored) {
         } catch (Exception e) {
-            log.error("Ошибка во время обработки событий хаба", e);
+            log.error("Ошибка во время обработки снапшотов", e);
         }
     }
 }

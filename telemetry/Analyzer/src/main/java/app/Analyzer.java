@@ -1,7 +1,7 @@
 package app;
 
-import app.processor.impl.HubEventProcessor;
-import app.processor.impl.SnapshotProcessor;
+import app.processor.HubEventProcessor;
+import app.processor.SnapshotProcessor;
 import java.util.concurrent.CompletableFuture;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;

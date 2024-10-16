@@ -1,7 +1,6 @@
 package app.repository.persister;
 
 import app.model.entity.ScenarioAction;
-import app.model.entity.Sensor;
 import app.repository.ScenarioActionRepository;
 import jakarta.transaction.Transactional;
 import java.util.List;
