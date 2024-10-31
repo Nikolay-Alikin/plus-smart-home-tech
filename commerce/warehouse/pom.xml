@@ -90,7 +90,7 @@
                         </goals>
                         <configuration>
                             <inputSpec>
-                                openapi/warehouse.yml
+                                commerce/warehouse/openapi/warehouse.yml
                             </inputSpec>
                             <generatorName>spring</generatorName>
                             <apiPackage>ru.yandex.practicum.generated.api</apiPackage>

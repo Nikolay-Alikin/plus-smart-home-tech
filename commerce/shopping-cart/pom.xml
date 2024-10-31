@@ -90,7 +90,7 @@
                         </goals>
                         <configuration>
                             <inputSpec>
-                                openapi/cart.yml
+                                commerce/shopping-cart/openapi/cart.yml
                             </inputSpec>
                             <generatorName>spring</generatorName>
                             <apiPackage>ru.yandex.practicum.generated.api</apiPackage>

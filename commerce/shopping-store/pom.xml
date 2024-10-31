@@ -90,7 +90,7 @@
                         </goals>
                         <configuration>
                             <inputSpec>
-                                openapi/store.yml
+                                commerce/shopping-store/openapi/store.yml
                             </inputSpec>
                             <generatorName>spring</generatorName>
                             <apiPackage>ru.yandex.practicum.generated.api</apiPackage>
