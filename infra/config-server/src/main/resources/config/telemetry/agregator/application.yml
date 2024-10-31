@@ -1,0 +1,13 @@
+server:
+  port: 8082
+
+kafka:
+  bootstrapServers: localhost:9092
+  topic:
+    name:
+      consume: telemetry.sensors.v1
+      produce: telemetry.snapshots.v1
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
