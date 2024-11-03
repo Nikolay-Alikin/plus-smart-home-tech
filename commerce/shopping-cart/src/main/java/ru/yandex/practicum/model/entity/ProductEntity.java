@@ -12,6 +12,7 @@ import java.util.Objects;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.UuidGenerator;
 import org.hibernate.proxy.HibernateProxy;
 
 
@@ -22,6 +23,7 @@ import org.hibernate.proxy.HibernateProxy;
 public class ProductEntity {
 
     @Id
+    @UuidGenerator
     @Column(name = "id", nullable = false)
     private UUID id;
     @Column(name = "count")

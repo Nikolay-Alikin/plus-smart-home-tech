@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.client.ShoppingStoreClient;
 import ru.yandex.practicum.client.WarehouseClient;
+import ru.yandex.practicum.generated.model.dto.AddProductToShoppingCartRequestInner;
 import ru.yandex.practicum.generated.model.dto.BookedProductsDto;
 import ru.yandex.practicum.generated.model.dto.ChangeProductQuantityRequest;
 import ru.yandex.practicum.generated.model.dto.NoProductsInShoppingCartException;
@@ -25,7 +26,6 @@ import ru.yandex.practicum.repository.ShoppingCartRepository;
 import ru.yandex.practicum.service.ShoppingCartService;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class ShoppingCartServiceImpl implements ShoppingCartService {
 
@@ -35,18 +35,25 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     private final ShoppingCartRepository shoppingCartRepository;
 
     @Override
-    public ShoppingCartDto addProductToShoppingCart(String username, Map<String, Long> requestBody) {
+    @Transactional
+    public ShoppingCartDto addProductToShoppingCart(String username,
+            List<AddProductToShoppingCartRequestInner> requestBody) {
         ShoppingCartEntity shoppingCartEntity = new ShoppingCartEntity();
         shoppingCartEntity.setUsername(username);
         ShoppingCartEntity createdEntity = shoppingCartRepository.save(shoppingCartEntity);
 
-        List<ProductEntity> productEntities = buildProductEntities(requestBody, createdEntity);
+        Map<String, Long> idToQuantity = requestBody.stream().collect(
+                Collectors.toMap(AddProductToShoppingCartRequestInner::getProductId,
+                        AddProductToShoppingCartRequestInner::getQuantity));
+
+        List<ProductEntity> productEntities = buildProductEntities(idToQuantity, createdEntity);
         productRepository.saveAll(productEntities);
 
         return new ShoppingCartDto(createdEntity.getShoppingCartId(), buildProducts(productEntities));
     }
 
     @Override
+    @Transactional
     public BookedProductsDto bookingProductsFromShoppingCart(String username) {
         ShoppingCartEntity entity = shoppingCartRepository.findByUsername(username);
         ShoppingCartDto dto = new ShoppingCartDto(entity.getShoppingCartId(),
@@ -57,6 +64,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
 
     @Override
+    @Transactional
     public ProductDto changeProductQuantity(String username,
             ChangeProductQuantityRequest changeProductQuantityRequest) {
         ProductEntity productEntity = productRepository.findByIdAndShoppingCartEntityUsername(
@@ -73,11 +81,13 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
     @Override
+    @Transactional
     public void deactivateCurrentShoppingCart(String username) {
         shoppingCartRepository.deleteByUsername(username);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ShoppingCartDto getShoppingCart(String username) {
         ShoppingCartEntity entity = shoppingCartRepository.findByUsername(username);
         ShoppingCartDto shoppingCartDto = new ShoppingCartDto();
@@ -87,12 +97,18 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
     @Override
-    public ShoppingCartDto removeFromShoppingCart(String username, Map<String, Long> requestBody) {
+    @Transactional
+    public ShoppingCartDto removeFromShoppingCart(String username,
+            List<AddProductToShoppingCartRequestInner> requestBody) {
         ShoppingCartEntity entity = shoppingCartRepository.findByUsername(username);
 
         productRepository.deleteAll(entity.getProductEntities());
 
-        List<ProductEntity> productEntities = buildProductEntities(requestBody, entity);
+        Map<String, Long> idToQuantity = requestBody.stream().collect(
+                Collectors.toMap(AddProductToShoppingCartRequestInner::getProductId,
+                        AddProductToShoppingCartRequestInner::getQuantity));
+
+        List<ProductEntity> productEntities = buildProductEntities(idToQuantity, entity);
 
         entity.setProductEntities(new HashSet<>(productEntities));
 

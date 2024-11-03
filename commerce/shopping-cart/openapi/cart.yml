@@ -45,30 +45,19 @@ paths:
           required: true
           schema:
             type: string
-        - name: products
-          in: query
-          description: Отображение идентификатора товара на отобранное количество.
-          content:
-            '*/*':
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    productId:
-                      type: string
-                    quantity:
-                      type: integer
-                      format: int64
       requestBody:
         content:
-          application/json:
+          '*/*':
             schema:
-              type: object
-              additionalProperties:
-                type: integer
-                format: int64
-              description: Отображение идентификатора товара на отобранное количество.
+              type: array
+              items:
+                type: object
+                properties:
+                  productId:
+                    type: string
+                  quantity:
+                    type: integer
+                    format: int64
         required: true
       responses:
         '200':
@@ -115,30 +104,19 @@ paths:
           required: true
           schema:
             type: string
-        - name: products
-          in: query
-          description: Отображение идентификатора товара на отобранное количество.
-          content:
-            '*/*':
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    productId:
-                      type: string
-                    quantity:
-                      type: integer
-                      format: int64
       requestBody:
         content:
-          application/json:
+          '*/*':
             schema:
-              type: object
-              additionalProperties:
-                type: integer
-                format: int64
-              description: Отображение идентификатора товара на отобранное количество.
+              type: array
+              items:
+                type: object
+                properties:
+                  productId:
+                    type: string
+                  quantity:
+                    type: integer
+                    format: int64
         required: true
       responses:
         '200':
@@ -171,13 +149,6 @@ paths:
           required: true
           schema:
             type: string
-        - name: changeProductQuantityRequest
-          in: query
-          description: Отображение идентификатора товара на отобранное количество.
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/ChangeProductQuantityRequest'
       requestBody:
         content:
           application/json:

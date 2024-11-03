@@ -18,9 +18,8 @@ public class StoreController implements ApiApi {
 
     private final StoreService service;
 
-    //TODO зачем в query и в body передавать один и тот же объект? Ошибка в спецификации?
     @Override
-    public ResponseEntity<ProductDto> createNewProduct(ProductDto productDto, ProductDto product) {
+    public ResponseEntity<ProductDto> createNewProduct(ProductDto productDto) {
         //product игнорируем
         return ResponseEntity.ok(service.createNewProduct(productDto));
     }
@@ -35,9 +34,8 @@ public class StoreController implements ApiApi {
         return ResponseEntity.ok(service.getProducts(category, pageable));
     }
 
-    //TODO зачем в path и в body передавать один и тот же объект? Ошибка в спецификации?
     @Override
-    public ResponseEntity<Boolean> removeProductFromStore(UUID body, UUID productId) {
+    public ResponseEntity<Boolean> removeProductFromStore(UUID productId) {
         //body игнорируем
         return ResponseEntity.ok(service.removeProductFromStore(productId));
     }
@@ -49,9 +47,8 @@ public class StoreController implements ApiApi {
         return null;
     }
 
-    //TODO зачем в query и в body передавать один и тот же объект? Ошибка в спецификации?
     @Override
-    public ResponseEntity<ProductDto> updateProduct(ProductDto productDto, ProductDto product) {
+    public ResponseEntity<ProductDto> updateProduct(ProductDto productDto) {
         return ResponseEntity.ok(service.updateProduct(productDto));
     }
 }

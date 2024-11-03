@@ -20,7 +20,6 @@ import ru.yandex.practicum.repository.ProductRepository;
 import ru.yandex.practicum.service.StoreService;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class StoreServiceImpl implements StoreService {
 
@@ -28,6 +27,7 @@ public class StoreServiceImpl implements StoreService {
     private final ProductRepository repository;
 
     @Override
+    @Transactional
     public ProductDto createNewProduct(ProductDto productDto) {
         ProductEntity entity;
         if (productDto.getProductId().isPresent()) {
@@ -42,11 +42,13 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ProductDto getProduct(UUID productId) {
         return mapper.toDto(findById(productId));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ProductDto> getProducts(String category, Pageable pageable) {
         String[] sort = pageable.getSort().toArray(new String[0]);
         org.springframework.data.domain.Pageable pageRequest = PageRequest.of(
@@ -59,6 +61,7 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
+    @Transactional
     public Boolean removeProductFromStore(UUID productId) {
         if (!repository.existsById(productId)) {
             return false;
@@ -68,14 +71,16 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
+    @Transactional
     public Boolean setProductQuantityState(SetProductQuantityStateRequest setProductQuantityStateRequest) {
         ProductEntity entity = findById(setProductQuantityStateRequest.getProductId());
-        entity.quantityState(setProductQuantityStateRequest.getQuantityState().name());
+        entity.quantityState(setProductQuantityStateRequest.getQuantityState());
         repository.save(entity);
         return true;
     }
 
     @Override
+    @Transactional
     public ProductDto updateProduct(ProductDto productDto) {
         UUID productId = Optional.ofNullable(productDto.getProductId().get()).orElseThrow(() -> {
             ProductNotFoundException exception = new ProductNotFoundException();

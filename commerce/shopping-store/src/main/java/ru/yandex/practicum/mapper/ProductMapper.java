@@ -6,6 +6,7 @@ import ru.yandex.practicum.generated.model.dto.ProductCategory;
 import ru.yandex.practicum.generated.model.dto.ProductDto;
 import ru.yandex.practicum.generated.model.dto.ProductState;
 import ru.yandex.practicum.generated.model.dto.QuantityState;
+import ru.yandex.practicum.generated.model.dto.SetProductQuantityStateRequest.QuantityStateEnum;
 import ru.yandex.practicum.model.entity.ProductEntity;
 
 @Component
@@ -18,9 +19,8 @@ public class ProductMapper {
                 .description(dto.getDescription())
                 .price(dto.getPrice())
                 .rating(dto.getRating())
-                .quantityState(dto.getQuantityState().name())
-                .productState(dto.getProductState().name())
-                .productCategory(dto.getProductCategory().name())
+                .quantityState(QuantityStateEnum.valueOf(dto.getQuantityState().name()))
+                .productCategory(dto.getProductCategory())
                 .imageSrc(dto.getImageSrc().orElse(null));
     }
 
@@ -31,9 +31,9 @@ public class ProductMapper {
                 .description(entity.description())
                 .price(entity.price())
                 .rating(entity.rating())
-                .quantityState(QuantityState.valueOf(entity.quantityState()))
-                .productState(ProductState.valueOf(entity.productState()))
-                .productCategory(ProductCategory.valueOf(entity.productCategory()))
+                .quantityState(QuantityState.valueOf(entity.quantityState().name()))
+                .productState(ProductState.valueOf(entity.productState().name()))
+                .productCategory(ProductCategory.valueOf(entity.productCategory().name()))
                 .imageSrc(entity.imageSrc());
     }
 
@@ -47,10 +47,11 @@ public class ProductMapper {
                 .description(dto.getDescription() == null ? entity.description() : dto.getDescription())
                 .price(dto.getPrice() == null ? entity.price() : dto.getPrice())
                 .rating(dto.getRating() == null ? entity.rating() : dto.getRating())
-                .quantityState(dto.getQuantityState() == null ? entity.quantityState() : dto.getQuantityState().name())
-                .productState(dto.getProductState() == null ? entity.productState() : dto.getProductState().name())
+                .quantityState(dto.getQuantityState() == null ? entity.quantityState()
+                        : QuantityStateEnum.valueOf(dto.getQuantityState().name()))
+                .productState(dto.getProductState() == null ? entity.productState() : dto.getProductState())
                 .productCategory(
-                        dto.getProductCategory() == null ? entity.productCategory() : dto.getProductCategory().name())
+                        dto.getProductCategory() == null ? entity.productCategory() : dto.getProductCategory())
                 .imageSrc(dto.getImageSrc() == null ? entity.imageSrc() : dto.getImageSrc().orElse(entity.imageSrc()));
     }
 }

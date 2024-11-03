@@ -2,6 +2,8 @@ package ru.yandex.practicum.model.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -13,6 +15,10 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
+import ru.yandex.practicum.generated.model.dto.ProductCategory;
+import ru.yandex.practicum.generated.model.dto.ProductState;
+import ru.yandex.practicum.generated.model.dto.QuantityState;
+import ru.yandex.practicum.generated.model.dto.SetProductQuantityStateRequest.QuantityStateEnum;
 
 @Entity
 @Getter
@@ -33,20 +39,22 @@ public class ProductEntity {
     private String description;
 
     @Column(name = "image_src")
-    @JdbcTypeCode(SqlTypes.VARCHAR)
     private String imageSrc;
 
     @Column(name = "quantity_state", nullable = false)
-    private String quantityState;
+    @Enumerated(EnumType.STRING)
+    private QuantityStateEnum quantityState;
 
     @Column(name = "product_state", nullable = false)
-    private String productState;
+    @Enumerated(EnumType.STRING)
+    private ProductState productState;
 
     @Column(name = "rating", nullable = false)
     private double rating;
 
     @Column(name = "product_category")
-    private String productCategory;
+    @Enumerated(EnumType.STRING)
+    private ProductCategory productCategory;
 
     @Column(name = "price", nullable = false)
     private BigDecimal price;

@@ -78,12 +78,6 @@ paths:
         - Склад магазина
       description: Зарезервировать товары на складе по корзине.
       operationId: bookingProductForShoppingCart
-      parameters:
-        - name: shoppingCart
-          in: query
-          description: Корзина товаров.
-          schema:
-            $ref: '#/components/schemas/ShoppingCartDto'
       requestBody:
         content:
           application/json:
@@ -114,13 +108,6 @@ paths:
         Собрать ранее зарезервированные товары к заказу для подготовки к
         отправке.
       operationId: assemblyProductForOrderFromShoppingCart
-      parameters:
-        - name: assemblyProductForOrderFromShoppingCartRequest
-          in: query
-          description: Корзина товаров.
-          schema:
-            $ref: >-
-              #/components/schemas/AssemblyProductForOrderFromShoppingCartRequest
       requestBody:
         content:
           application/json:
@@ -147,12 +134,6 @@ paths:
         - Склад магазина
       description: Принять товар на склад.
       operationId: addProductToWarehouse
-      parameters:
-        - name: addProductToWarehouseRequest
-          in: query
-          description: Запрос на добавление определенного количества определенного товара.
-          schema:
-            $ref: '#/components/schemas/AddProductToWarehouseRequest'
       requestBody:
         content:
           application/json:

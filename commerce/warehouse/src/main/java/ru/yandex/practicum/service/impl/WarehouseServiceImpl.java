@@ -8,7 +8,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.config.AddressProperties;
@@ -34,7 +33,6 @@ import ru.yandex.practicum.repository.ProductRepository;
 import ru.yandex.practicum.service.WarehouseService;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class WarehouseServiceImpl implements WarehouseService {
 
@@ -43,12 +41,14 @@ public class WarehouseServiceImpl implements WarehouseService {
     private final AddressProperties addressProperties;
 
     @Override
+    @Transactional
     public void acceptReturn(Map<String, Long> requestBody) {
         List<ProductEntity> entities = findAllByIds(requestBody);
         productRepository.saveAll(entities);
     }
 
     @Override
+    @Transactional
     public void addProductToWarehouse(AddProductToWarehouseRequest addProductToWarehouseRequest) {
         var entity = getProductEntityById(addProductToWarehouseRequest.getProductId());
         entity.setQuantity(entity.getQuantity() + addProductToWarehouseRequest.getQuantity());
@@ -56,6 +56,7 @@ public class WarehouseServiceImpl implements WarehouseService {
     }
 
     @Override
+    @Transactional
     public BookedProductsDto assemblyProductForOrderFromShoppingCart(
             AssemblyProductForOrderFromShoppingCartRequest assemblyProductForOrderFromShoppingCartRequest) {
         var shoppingCartId = assemblyProductForOrderFromShoppingCartRequest.getShoppingCartId();
@@ -73,6 +74,7 @@ public class WarehouseServiceImpl implements WarehouseService {
     }
 
     @Override
+    @Transactional
     public BookedProductsDto bookingProductForShoppingCart(ShoppingCartDto shoppingCartDto) {
         var products = shoppingCartDto.getProducts();
 
@@ -112,15 +114,6 @@ public class WarehouseServiceImpl implements WarehouseService {
         return getBookedProductsDto(filteredEntities.values());
     }
 
-    @NotNull
-    private static BookedProductsDto getBookedProductsDto(Collection<ProductEntity> filteredEntities) {
-        var dto = new BookedProductsDto();
-        dto.setFragile(filteredEntities.stream().anyMatch(ProductEntity::isFragile));
-        dto.setDeliveryVolume(filteredEntities.stream().mapToDouble(ProductEntity::getWeight).sum());
-        dto.setDeliveryWeight(filteredEntities.stream().mapToDouble(ProductEntity::getWeight).sum());
-        return dto;
-    }
-
     @Override
     public AddressDto getWarehouseAddress() {
         return new AddressDto()
@@ -132,6 +125,7 @@ public class WarehouseServiceImpl implements WarehouseService {
     }
 
     @Override
+    @Transactional
     public void newProductInWarehouse(NewProductInWarehouseRequest newProductInWarehouseRequest) {
         checkingProductExistence(newProductInWarehouseRequest.getProductId());
         var json = new DimensionJson();
@@ -144,6 +138,16 @@ public class WarehouseServiceImpl implements WarehouseService {
                 .setDimension(json)
                 .setFragile(newProductInWarehouseRequest.getFragile()));
     }
+
+    private BookedProductsDto getBookedProductsDto(Collection<ProductEntity> filteredEntities) {
+        var dto = new BookedProductsDto();
+        dto.setFragile(filteredEntities.stream().anyMatch(ProductEntity::isFragile));
+        dto.setDeliveryVolume(filteredEntities.stream().mapToDouble(ProductEntity::getWeight).sum());
+        dto.setDeliveryWeight(filteredEntities.stream().mapToDouble(ProductEntity::getWeight).sum());
+        return dto;
+    }
+
+
 
     private void checkingProductExistence(UUID productId) {
         productRepository.findById(productId).ifPresent((entity) -> {

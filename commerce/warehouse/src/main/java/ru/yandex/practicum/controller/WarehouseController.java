@@ -20,25 +20,20 @@ public class WarehouseController implements ApiApi {
 
     private final WarehouseService service;
 
-    //TODO Лист похоже лишний
     @Override
     public ResponseEntity<Void> acceptReturn(Map<String, Long> requestBody, List<Object> products) {
         service.acceptReturn(requestBody);
         return ResponseEntity.ok().build();
     }
 
-    //TODO дублируются объекты в апи
     @Override
-    public ResponseEntity<Void> addProductToWarehouse(AddProductToWarehouseRequest addProductToWarehouseRequest2,
-            AddProductToWarehouseRequest addProductToWarehouseRequest) {
+    public ResponseEntity<Void> addProductToWarehouse(AddProductToWarehouseRequest addProductToWarehouseRequest) {
         service.addProductToWarehouse(addProductToWarehouseRequest);
         return ResponseEntity.ok().build();
     }
 
-    //TODO дублируются объекты в апи
     @Override
     public ResponseEntity<BookedProductsDto> assemblyProductForOrderFromShoppingCart(
-            AssemblyProductForOrderFromShoppingCartRequest assemblyProductForOrderFromShoppingCartRequest2,
             AssemblyProductForOrderFromShoppingCartRequest assemblyProductForOrderFromShoppingCartRequest) {
         var dto = service.assemblyProductForOrderFromShoppingCart(
                 assemblyProductForOrderFromShoppingCartRequest);
@@ -46,10 +41,8 @@ public class WarehouseController implements ApiApi {
         return ResponseEntity.ok(dto);
     }
 
-    //TODO дублируются объекты в апи
     @Override
-    public ResponseEntity<BookedProductsDto> bookingProductForShoppingCart(ShoppingCartDto shoppingCartDto,
-            ShoppingCartDto shoppingCart) {
+    public ResponseEntity<BookedProductsDto> bookingProductForShoppingCart(ShoppingCartDto shoppingCartDto) {
         var dto = service.bookingProductForShoppingCart(shoppingCartDto);
         return ResponseEntity.ok(dto);
     }
@@ -59,7 +52,6 @@ public class WarehouseController implements ApiApi {
         return ResponseEntity.ok(service.getWarehouseAddress());
     }
 
-    //TODO дублируются объекты в апи
     @Override
     public ResponseEntity<Void> newProductInWarehouse(NewProductInWarehouseRequest newProductInWarehouseRequest2,
             NewProductInWarehouseRequest newProductInWarehouseRequest) {

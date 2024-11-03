@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.generated.api.ApiApi;
+import ru.yandex.practicum.generated.model.dto.AddProductToShoppingCartRequestInner;
 import ru.yandex.practicum.generated.model.dto.BookedProductsDto;
 import ru.yandex.practicum.generated.model.dto.ChangeProductQuantityRequest;
 import ru.yandex.practicum.generated.model.dto.ProductDto;
@@ -21,8 +22,8 @@ public class ShoppingCartController implements ApiApi {
 
     //TODO описание query больше подходит для body. По ощущениям, query здесь тоже не нужен.
     @Override
-    public ResponseEntity<ShoppingCartDto> addProductToShoppingCart(String username, Map<String, Long> requestBody,
-            List<Object> products) {
+    public ResponseEntity<ShoppingCartDto> addProductToShoppingCart(String username,
+            List<AddProductToShoppingCartRequestInner> requestBody) {
         return ResponseEntity.ok(service.addProductToShoppingCart(username, requestBody));
     }
 
@@ -35,9 +36,8 @@ public class ShoppingCartController implements ApiApi {
     //TODO снова дублирующийся объект в query и body
     @Override
     public ResponseEntity<ProductDto> changeProductQuantity(String username,
-            ChangeProductQuantityRequest changeProductQuantityRequest2,
             ChangeProductQuantityRequest changeProductQuantityRequest) {
-        ResponseEntity.ok(service.changeProductQuantity(username, changeProductQuantityRequest2));
+        ResponseEntity.ok(service.changeProductQuantity(username, changeProductQuantityRequest));
         return null;
     }
 
@@ -54,8 +54,8 @@ public class ShoppingCartController implements ApiApi {
 
     //TODO описание query больше подходит для body. По ощущениям, query здесь тоже не нужен.
     @Override
-    public ResponseEntity<ShoppingCartDto> removeFromShoppingCart(String username, Map<String, Long> requestBody,
-            List<Object> products) {
-        return ResponseEntity.ok(service.removeFromShoppingCart(username, requestBody));
+    public ResponseEntity<ShoppingCartDto> removeFromShoppingCart(String username,
+            List<AddProductToShoppingCartRequestInner> requestBody) {
+          return ResponseEntity.ok(service.removeFromShoppingCart(username, requestBody));
     }
 }

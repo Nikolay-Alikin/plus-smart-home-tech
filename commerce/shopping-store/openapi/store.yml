@@ -46,14 +46,6 @@ paths:
         - Витрина онлайн-магазина
       description: Создание нового товара в ассортименте
       operationId: createNewProduct
-      parameters:
-        - name: product
-          in: query
-          description: >-
-            Описательная часть вновь добавляемого товара в систему, например
-            нового роутера и т.д.
-          schema:
-            $ref: '#/components/schemas/ProductDto'
       requestBody:
         content:
           application/json:
@@ -74,12 +66,6 @@ paths:
         Обновление товара в ассортименте, например уточнение описания,
         характеристик и т.д.
       operationId: updateProduct
-      parameters:
-        - name: product
-          in: query
-          description: Описательная часть изменяемого товара в системе
-          schema:
-            $ref: '#/components/schemas/ProductDto'
       requestBody:
         content:
           application/json:
@@ -107,13 +93,6 @@ paths:
         Удалить товар из ассортимента магазина. Функция для менеджерского
         состава.
       operationId: removeProductFromStore
-      parameters:
-        - name: productId
-          in: query
-          description: Идентификатор товара в БД на удаление из ассортимента.
-          schema:
-            type: string
-            format: uuid
       requestBody:
         content:
           application/json:

@@ -1,6 +1,7 @@
 package ru.yandex.practicum.service;
 
-import java.util.Map;
+import java.util.List;
+import ru.yandex.practicum.generated.model.dto.AddProductToShoppingCartRequestInner;
 import ru.yandex.practicum.generated.model.dto.BookedProductsDto;
 import ru.yandex.practicum.generated.model.dto.ChangeProductQuantityRequest;
 import ru.yandex.practicum.generated.model.dto.ProductDto;
@@ -8,7 +9,7 @@ import ru.yandex.practicum.generated.model.dto.ShoppingCartDto;
 
 public interface ShoppingCartService {
 
-    ShoppingCartDto addProductToShoppingCart(String username, Map<String, Long> requestBody);
+    ShoppingCartDto addProductToShoppingCart(String username, List<AddProductToShoppingCartRequestInner> requestBody);
 
     BookedProductsDto bookingProductsFromShoppingCart(String username);
 
@@ -18,5 +19,5 @@ public interface ShoppingCartService {
 
     ShoppingCartDto getShoppingCart(String username);
 
-    ShoppingCartDto removeFromShoppingCart(String username, Map<String, Long> requestBody);
+    ShoppingCartDto removeFromShoppingCart(String username, List<AddProductToShoppingCartRequestInner> requestBody);
 }
