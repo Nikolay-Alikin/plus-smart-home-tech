@@ -1,7 +1,6 @@
 package ru.yandex.practicum.controller;
 
 import java.util.List;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +19,6 @@ public class ShoppingCartController implements ApiApi {
 
     private final ShoppingCartService service;
 
-    //TODO описание query больше подходит для body. По ощущениям, query здесь тоже не нужен.
     @Override
     public ResponseEntity<ShoppingCartDto> addProductToShoppingCart(String username,
             List<AddProductToShoppingCartRequestInner> requestBody) {
@@ -33,7 +31,6 @@ public class ShoppingCartController implements ApiApi {
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
-    //TODO снова дублирующийся объект в query и body
     @Override
     public ResponseEntity<ProductDto> changeProductQuantity(String username,
             ChangeProductQuantityRequest changeProductQuantityRequest) {
@@ -52,10 +49,9 @@ public class ShoppingCartController implements ApiApi {
         return ResponseEntity.ok(service.getShoppingCart(username));
     }
 
-    //TODO описание query больше подходит для body. По ощущениям, query здесь тоже не нужен.
     @Override
     public ResponseEntity<ShoppingCartDto> removeFromShoppingCart(String username,
             List<AddProductToShoppingCartRequestInner> requestBody) {
-          return ResponseEntity.ok(service.removeFromShoppingCart(username, requestBody));
+        return ResponseEntity.ok(service.removeFromShoppingCart(username, requestBody));
     }
 }

@@ -11,6 +11,7 @@ import ru.yandex.practicum.generated.model.dto.AddressDto;
 import ru.yandex.practicum.generated.model.dto.AssemblyProductForOrderFromShoppingCartRequest;
 import ru.yandex.practicum.generated.model.dto.BookedProductsDto;
 import ru.yandex.practicum.generated.model.dto.NewProductInWarehouseRequest;
+import ru.yandex.practicum.generated.model.dto.ShippedToDeliveryRequest;
 import ru.yandex.practicum.generated.model.dto.ShoppingCartDto;
 import ru.yandex.practicum.service.WarehouseService;
 
@@ -56,6 +57,12 @@ public class WarehouseController implements ApiApi {
     public ResponseEntity<Void> newProductInWarehouse(NewProductInWarehouseRequest newProductInWarehouseRequest2,
             NewProductInWarehouseRequest newProductInWarehouseRequest) {
         service.newProductInWarehouse(newProductInWarehouseRequest);
+        return ResponseEntity.ok().build();
+    }
+
+    @Override
+    public ResponseEntity<Void> shippedToDelivery(ShippedToDeliveryRequest shippedToDeliveryRequest) {
+        service.shippedToDelivery(shippedToDeliveryRequest);
         return ResponseEntity.ok().build();
     }
 }
