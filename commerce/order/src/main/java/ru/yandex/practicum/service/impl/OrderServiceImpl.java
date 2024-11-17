@@ -76,7 +76,9 @@ public class OrderServiceImpl implements OrderService {
         var deliveryCost = deliveryClient.deliveryCost(dto);
         entity.setDeliveryPrice(deliveryCost);
         orderRepository.save(entity);
-        return null;
+        dto.setDeliveryPrice(deliveryCost);
+
+        return dto;
     }
 
     @Override
