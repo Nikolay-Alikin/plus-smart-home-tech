@@ -5,14 +5,14 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-import ru.yandex.practicum.generated.api.ApiApi;
-import ru.yandex.practicum.generated.model.dto.OrderDto;
-import ru.yandex.practicum.generated.model.dto.PaymentDto;
+import ru.yandex.practicum.generated.api.payment.ApiPayment;
+import ru.yandex.practicum.generated.model.payment.dto.OrderDto;
+import ru.yandex.practicum.generated.model.payment.dto.PaymentDto;
 import ru.yandex.practicum.service.PaymentService;
 
 @RestController
 @RequiredArgsConstructor
-public class PaymentController implements ApiApi {
+public class PaymentController implements ApiPayment {
 
     private final PaymentService service;
 

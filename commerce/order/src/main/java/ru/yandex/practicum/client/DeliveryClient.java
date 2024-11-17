@@ -4,15 +4,16 @@ import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import java.math.BigDecimal;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import ru.yandex.practicum.generated.model.dto.DeliveryDto;
-import ru.yandex.practicum.generated.model.dto.OrderDto;
+import ru.yandex.practicum.generated.api.delivery.ApiDelivery;
+import ru.yandex.practicum.generated.model.oder.dto.DeliveryDto;
+import ru.yandex.practicum.generated.model.oder.dto.OrderDto;
 
 @FeignClient(name = "delivery")
-public interface DeliveryClient {
-
+public interface DeliveryClient extends ApiDelivery {
 
     @RequestMapping(
             method = RequestMethod.POST,
@@ -20,8 +21,9 @@ public interface DeliveryClient {
             produces = {"*/*"},
             consumes = {"application/json"}
     )
-    BigDecimal deliveryCost(
-            @Parameter(name = "OrderDto", description = "", required = true) @Valid @RequestBody OrderDto orderDto);
+    ResponseEntity<BigDecimal> deliveryCost(
+            @Parameter(name = "OrderDto", description = "", required = true) @Valid @RequestBody OrderDto orderDto
+    );
 
     @RequestMapping(
             method = RequestMethod.PUT,
@@ -29,7 +31,7 @@ public interface DeliveryClient {
             produces = {"*/*"},
             consumes = {"application/json"}
     )
-    DeliveryDto planDelivery(
+    ResponseEntity<DeliveryDto> planDelivery(
             @Parameter(name = "DeliveryDto", description = "", required = true) @Valid @RequestBody DeliveryDto deliveryDto
     );
 }

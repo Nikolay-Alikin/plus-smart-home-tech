@@ -11,11 +11,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.client.OrderClient;
 import ru.yandex.practicum.client.ShoppingStoreClient;
-import ru.yandex.practicum.generated.model.dto.NoOrderFoundException;
-import ru.yandex.practicum.generated.model.dto.NoOrderFoundException.HttpStatusEnum;
-import ru.yandex.practicum.generated.model.dto.OrderDto;
-import ru.yandex.practicum.generated.model.dto.PaymentDto;
-import ru.yandex.practicum.generated.model.dto.ProductDto;
+import ru.yandex.practicum.generated.model.payment.dto.NoOrderFoundException;
+import ru.yandex.practicum.generated.model.payment.dto.NoOrderFoundException.HttpStatusEnum;
+import ru.yandex.practicum.generated.model.payment.dto.OrderDto;
+import ru.yandex.practicum.generated.model.payment.dto.PaymentDto;
+import ru.yandex.practicum.generated.model.payment.dto.ProductDto;
 import ru.yandex.practicum.model.entity.PaymentEntity;
 import ru.yandex.practicum.model.enumerated.PaymentStatus;
 import ru.yandex.practicum.model.exception.NotFoundException;
@@ -98,6 +98,7 @@ public class PaymentServiceImpl implements PaymentService {
     private List<ProductDto> getProducts(Set<String> productIds) {
         return productIds.stream()
                 .map(id -> Objects.requireNonNull(shoppingStoreClient.getProduct(UUID.fromString(id)).getBody()))
+                .map(this::toDto)
                 .toList();
     }
 
@@ -117,5 +118,15 @@ public class PaymentServiceImpl implements PaymentService {
             data.setMessage("Заказ не найден");
             return new NotFoundException(data);
         });
+    }
+
+    private ProductDto toDto(ru.yandex.practicum.generated.model.store.dto.ProductDto dto) {
+        var productDto = new ProductDto();
+        productDto.productId(dto.getProductId().get());
+        productDto.productName(dto.getProductName());
+        productDto.price(dto.getPrice());
+        productDto.description(dto.getDescription());
+        productDto.imageSrc(dto.getImageSrc().get());
+        return productDto;
     }
 }

@@ -2,8 +2,8 @@ package ru.yandex.practicum.service;
 
 import java.math.BigDecimal;
 import java.util.UUID;
-import ru.yandex.practicum.generated.model.dto.OrderDto;
-import ru.yandex.practicum.generated.model.dto.PaymentDto;
+import ru.yandex.practicum.generated.model.payment.dto.OrderDto;
+import ru.yandex.practicum.generated.model.payment.dto.PaymentDto;
 
 public interface PaymentService {
 

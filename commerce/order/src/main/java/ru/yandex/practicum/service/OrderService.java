@@ -2,9 +2,10 @@ package ru.yandex.practicum.service;
 
 import java.util.List;
 import java.util.UUID;
-import ru.yandex.practicum.generated.model.dto.CreateNewOrderRequest;
-import ru.yandex.practicum.generated.model.dto.OrderDto;
-import ru.yandex.practicum.generated.model.dto.ProductReturnRequest;
+import ru.yandex.practicum.generated.model.oder.dto.CreateNewOrderRequest;
+import ru.yandex.practicum.generated.model.oder.dto.OrderDto;
+import ru.yandex.practicum.generated.model.oder.dto.ProductReturnRequest;
+
 
 public interface OrderService {
 

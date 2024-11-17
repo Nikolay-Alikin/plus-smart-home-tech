@@ -11,7 +11,7 @@ import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.UuidGenerator;
-import ru.yandex.practicum.model.enumerated.DeliveryState;
+import ru.yandex.practicum.generated.model.delivery.dto.DeliveryState;
 
 @Setter
 @Getter

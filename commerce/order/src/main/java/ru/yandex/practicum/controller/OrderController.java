@@ -5,15 +5,15 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-import ru.yandex.practicum.generated.api.ApiApi;
-import ru.yandex.practicum.generated.model.dto.CreateNewOrderRequest;
-import ru.yandex.practicum.generated.model.dto.OrderDto;
-import ru.yandex.practicum.generated.model.dto.ProductReturnRequest;
+import ru.yandex.practicum.generated.api.order.ApiOrder;
+import ru.yandex.practicum.generated.model.oder.dto.CreateNewOrderRequest;
+import ru.yandex.practicum.generated.model.oder.dto.OrderDto;
+import ru.yandex.practicum.generated.model.oder.dto.ProductReturnRequest;
 import ru.yandex.practicum.service.OrderService;
 
 @RestController
 @RequiredArgsConstructor
-public class OrderController implements ApiApi {
+public class OrderController implements ApiOrder {
 
     private final OrderService orderService;
 

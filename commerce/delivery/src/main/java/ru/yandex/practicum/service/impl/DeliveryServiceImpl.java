@@ -7,15 +7,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.client.OrderClient;
 import ru.yandex.practicum.client.WarehouseClient;
-import ru.yandex.practicum.generated.model.dto.AddressDto;
-import ru.yandex.practicum.generated.model.dto.DeliveryDto;
-import ru.yandex.practicum.generated.model.dto.NoOrderFoundException;
-import ru.yandex.practicum.generated.model.dto.NoOrderFoundException.HttpStatusEnum;
-import ru.yandex.practicum.generated.model.dto.OrderDto;
-import ru.yandex.practicum.generated.model.dto.ShippedToDeliveryRequest;
+import ru.yandex.practicum.generated.model.delivery.dto.NoOrderFoundException;
+import ru.yandex.practicum.generated.model.delivery.dto.NoOrderFoundException.HttpStatusEnum;
+import ru.yandex.practicum.generated.model.warehouse.dto.ShippedToDeliveryRequest;
+import ru.yandex.practicum.generated.model.delivery.dto.OrderDto;
+import ru.yandex.practicum.generated.model.delivery.dto.AddressDto;
+import ru.yandex.practicum.generated.model.delivery.dto.DeliveryState;
+import ru.yandex.practicum.generated.model.delivery.dto.DeliveryDto;
 import ru.yandex.practicum.model.entity.AddressEntity;
 import ru.yandex.practicum.model.entity.DeliveryEntity;
-import ru.yandex.practicum.model.enumerated.DeliveryState;
 import ru.yandex.practicum.model.exception.NotFoundException;
 import ru.yandex.practicum.repository.AddressRepository;
 import ru.yandex.practicum.repository.DeliveryRepository;
@@ -85,7 +85,7 @@ public class DeliveryServiceImpl implements DeliveryService {
     public void deliveryPicked(UUID body) {
         var entity = findByOrderId(body);
         entity.setDeliveryState(DeliveryState.IN_PROGRESS);
-        var orderDto = orderClient.assembly(body);
+        var orderDto = orderClient.assembly(body).getBody();
         var request = new ShippedToDeliveryRequest()
                 .deliveryId(entity.getDeliveryId())
                 .orderId(orderDto.getOrderId());
@@ -113,12 +113,13 @@ public class DeliveryServiceImpl implements DeliveryService {
         addressRepository.save(toAddressEntity);
 
         deliveryDto.setDeliveryId(deliveryEntityAfterSave.getDeliveryId());
-        deliveryDto.setDeliveryState(ru.yandex.practicum.generated.model.dto.DeliveryState.valueOf(
+        deliveryDto.setDeliveryState(DeliveryState.valueOf(
                 deliveryEntityAfterSave.getDeliveryState().name()));
         return deliveryDto;
     }
 
-    private AddressEntity buildAddressEntity(AddressDto addressDto, DeliveryEntity deliveryEntity, boolean isFrom) {
+    private AddressEntity buildAddressEntity(AddressDto addressDto,
+            DeliveryEntity deliveryEntity, boolean isFrom) {
         var addressEntity = new AddressEntity();
         addressEntity.setCountry(addressDto.getCountry());
         addressEntity.setCity(addressDto.getCity());
@@ -150,7 +151,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     private AddressEntity findWarehouse(UUID deliveryId) {
         return addressRepository.findByDeliveryEntityDeliveryIdAndFromIsTrue(deliveryId).orElseThrow(() -> {
-            var data = new NoOrderFoundException();
+            NoOrderFoundException data = new NoOrderFoundException();
             data.setHttpStatus(HttpStatusEnum._404_NOT_FOUND);
             data.setMessage("Не найдена доставка для расчёта");
             return new NotFoundException(data);
@@ -159,7 +160,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     private AddressEntity findDeliveryAddress(UUID deliveryId) {
         return addressRepository.findByDeliveryEntityDeliveryIdAndFromIsFalse(deliveryId).orElseThrow(() -> {
-            var data = new NoOrderFoundException();
+            NoOrderFoundException data = new NoOrderFoundException();
             data.setHttpStatus(HttpStatusEnum._404_NOT_FOUND);
             data.setMessage("Не найдена доставка для расчёта");
             return new NotFoundException(data);
@@ -168,7 +169,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     private DeliveryEntity findById(UUID deliveryId) {
         return deliveryRepository.findById(deliveryId).orElseThrow(() -> {
-            var data = new NoOrderFoundException();
+            NoOrderFoundException data = new NoOrderFoundException();
             data.setHttpStatus(HttpStatusEnum._404_NOT_FOUND);
             data.setMessage("Не найдена доставка для расчёта");
             return new NotFoundException(data);

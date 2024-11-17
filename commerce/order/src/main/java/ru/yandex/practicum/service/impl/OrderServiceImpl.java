@@ -11,15 +11,15 @@ import ru.yandex.practicum.client.DeliveryClient;
 import ru.yandex.practicum.client.PaymentClient;
 import ru.yandex.practicum.client.WarehouseClient;
 import ru.yandex.practicum.exception.NoOrderFound;
-import ru.yandex.practicum.generated.model.dto.AddressDto;
-import ru.yandex.practicum.generated.model.dto.AssemblyProductForOrderFromShoppingCartRequest;
-import ru.yandex.practicum.generated.model.dto.CreateNewOrderRequest;
-import ru.yandex.practicum.generated.model.dto.DeliveryDto;
-import ru.yandex.practicum.generated.model.dto.NoOrderFoundException;
-import ru.yandex.practicum.generated.model.dto.NoOrderFoundException.HttpStatusEnum;
-import ru.yandex.practicum.generated.model.dto.OrderDto;
-import ru.yandex.practicum.generated.model.dto.OrderDto.StateEnum;
-import ru.yandex.practicum.generated.model.dto.ProductReturnRequest;
+import ru.yandex.practicum.generated.model.oder.dto.AddressDto;
+import ru.yandex.practicum.generated.model.oder.dto.CreateNewOrderRequest;
+import ru.yandex.practicum.generated.model.oder.dto.DeliveryDto;
+import ru.yandex.practicum.generated.model.oder.dto.NoOrderFoundException;
+import ru.yandex.practicum.generated.model.oder.dto.NoOrderFoundException.HttpStatusEnum;
+import ru.yandex.practicum.generated.model.oder.dto.OrderDto;
+import ru.yandex.practicum.generated.model.oder.dto.OrderDto.StateEnum;
+import ru.yandex.practicum.generated.model.oder.dto.ProductReturnRequest;
+import ru.yandex.practicum.generated.model.warehouse.dto.AssemblyProductForOrderFromShoppingCartRequest;
 import ru.yandex.practicum.model.entity.AddressEntity;
 import ru.yandex.practicum.model.entity.OrderEntity;
 import ru.yandex.practicum.model.entity.ProductEntity;
@@ -47,7 +47,7 @@ public class OrderServiceImpl implements OrderService {
         request.setOrderId(body);
         request.setShoppingCartId(orderEntity.getShoppingCartId());
 
-        var response = warehouseClient.assemblyProductForOrderFromShoppingCart(request);
+        var response = warehouseClient.assemblyProductForOrderFromShoppingCart(request).getBody();
 
         orderEntity.setState(State.ASSEMBLED);
         orderEntity.setFragile(response.getFragile());
@@ -73,7 +73,7 @@ public class OrderServiceImpl implements OrderService {
     public OrderDto calculateDeliveryCost(UUID body) {
         var entity = findById(body);
         var dto = buildOrderDto(entity);
-        var deliveryCost = deliveryClient.deliveryCost(dto);
+        var deliveryCost = deliveryClient.deliveryCost(dto).getBody();
         entity.setDeliveryPrice(deliveryCost);
         orderRepository.save(entity);
         dto.setDeliveryPrice(deliveryCost);
@@ -86,7 +86,7 @@ public class OrderServiceImpl implements OrderService {
     public OrderDto calculateTotalCost(UUID body) {
         var entity = findById(body);
         var dto = buildOrderDto(entity);
-        var totalCost = paymentClient.getTotalCost(dto);
+        var totalCost = paymentClient.getTotalCost(dto).getBody();
 
         entity.setTotalPrice(totalCost);
         dto.setTotalPrice(totalCost);
@@ -140,14 +140,14 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public OrderDto delivery(UUID body) {
         var entity = findById(body);
-        var warehouseAddress = warehouseClient.getWarehouseAddress();
+        var warehouseAddress = warehouseClient.getWarehouseAddress().getBody();
         var deliveryAddress = buildAddressDto(addressRepository.findByOrderEntity(entity));
 
         DeliveryDto deliveryDto = new DeliveryDto();
         deliveryDto.setOrderId(entity.getOrderId());
-        deliveryDto.setFromAddress(warehouseAddress);
+        deliveryDto.setFromAddress(buildAddressDto(warehouseAddress));
         deliveryDto.setToAddress(deliveryAddress);
-        var answer = deliveryClient.planDelivery(deliveryDto);
+        var answer = deliveryClient.planDelivery(deliveryDto).getBody();
 
         entity.setDeliveryId(answer.getDeliveryId());
 
@@ -195,13 +195,21 @@ public class OrderServiceImpl implements OrderService {
         return null;
     }
 
-    private AddressDto buildAddressDto(AddressEntity addressEntity) {
+    private <T> AddressDto buildAddressDto(T address) {
         var dto = new AddressDto();
-        dto.setCountry(addressEntity.getCountry());
-        dto.setCity(addressEntity.getCity());
-        dto.setStreet(addressEntity.getStreet());
-        dto.setHouse(addressEntity.getHouse());
-        dto.setFlat(addressEntity.getFlat());
+        if (address instanceof AddressEntity entity) {
+            dto.setCountry(entity.getCountry());
+            dto.setCity(entity.getCity());
+            dto.setStreet(entity.getStreet());
+            dto.setHouse(entity.getHouse());
+            dto.setFlat(entity.getFlat());
+        } else if (address instanceof ru.yandex.practicum.generated.model.warehouse.dto.AddressDto warehouseDto) {
+            dto.setCountry(warehouseDto.getCountry());
+            dto.setCity(warehouseDto.getCity());
+            dto.setStreet(warehouseDto.getStreet());
+            dto.setHouse(warehouseDto.getHouse());
+            dto.setFlat(warehouseDto.getFlat());
+        }
         return dto;
     }
 

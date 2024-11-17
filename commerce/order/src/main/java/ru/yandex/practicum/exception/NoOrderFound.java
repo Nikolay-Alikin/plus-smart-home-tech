@@ -4,7 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import ru.yandex.practicum.generated.model.dto.NoOrderFoundException;
+import ru.yandex.practicum.generated.model.oder.dto.NoOrderFoundException;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
