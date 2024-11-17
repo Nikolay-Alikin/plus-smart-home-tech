@@ -18,10 +18,12 @@ import ru.yandex.practicum.generated.model.dto.BookedProductsDto;
 import ru.yandex.practicum.generated.model.dto.NewProductInWarehouseRequest;
 import ru.yandex.practicum.generated.model.dto.NoSpecifiedProductInWarehouseException;
 import ru.yandex.practicum.generated.model.dto.ProductInShoppingCartLowQuantityInWarehouse;
+import ru.yandex.practicum.generated.model.dto.ShippedToDeliveryRequest;
 import ru.yandex.practicum.generated.model.dto.ShoppingCartDto;
 import ru.yandex.practicum.generated.model.dto.SpecifiedProductAlreadyInWarehouseException;
 import ru.yandex.practicum.generated.model.dto.SpecifiedProductAlreadyInWarehouseException.HttpStatusEnum;
 import ru.yandex.practicum.model.entity.BookingEntity;
+import ru.yandex.practicum.model.entity.OrderDeliveryEntity;
 import ru.yandex.practicum.model.entity.ProductEntity;
 import ru.yandex.practicum.model.entity.jsonB.DimensionJson;
 import ru.yandex.practicum.model.exception.LowQuantityInWarehouseException;
@@ -29,6 +31,7 @@ import ru.yandex.practicum.model.exception.NoProductInWarehouseException;
 import ru.yandex.practicum.model.exception.NoSpecifiedProductException;
 import ru.yandex.practicum.model.exception.ProductExistsException;
 import ru.yandex.practicum.repository.BookingRepository;
+import ru.yandex.practicum.repository.OrderDeliveryRepository;
 import ru.yandex.practicum.repository.ProductRepository;
 import ru.yandex.practicum.service.WarehouseService;
 
@@ -39,6 +42,7 @@ public class WarehouseServiceImpl implements WarehouseService {
     private final BookingRepository bookingRepository;
     private final ProductRepository productRepository;
     private final AddressProperties addressProperties;
+    private final OrderDeliveryRepository orderDeliveryRepository;
 
     @Override
     @Transactional
@@ -139,6 +143,15 @@ public class WarehouseServiceImpl implements WarehouseService {
                 .setFragile(newProductInWarehouseRequest.getFragile()));
     }
 
+    @Override
+    @Transactional
+    public void shippedToDelivery(ShippedToDeliveryRequest shippedToDeliveryRequest) {
+        var entity = new OrderDeliveryEntity();
+        entity.setOrderId(shippedToDeliveryRequest.getOrderId());
+        entity.setDeliveryId(shippedToDeliveryRequest.getDeliveryId());
+        orderDeliveryRepository.save(entity);
+    }
+
     private BookedProductsDto getBookedProductsDto(Collection<ProductEntity> filteredEntities) {
         var dto = new BookedProductsDto();
         dto.setFragile(filteredEntities.stream().anyMatch(ProductEntity::isFragile));
@@ -146,7 +159,6 @@ public class WarehouseServiceImpl implements WarehouseService {
         dto.setDeliveryWeight(filteredEntities.stream().mapToDouble(ProductEntity::getWeight).sum());
         return dto;
     }
-
 
 
     private void checkingProductExistence(UUID productId) {

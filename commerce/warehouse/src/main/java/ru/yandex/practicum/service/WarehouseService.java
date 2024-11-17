@@ -6,6 +6,7 @@ import ru.yandex.practicum.generated.model.dto.AddressDto;
 import ru.yandex.practicum.generated.model.dto.AssemblyProductForOrderFromShoppingCartRequest;
 import ru.yandex.practicum.generated.model.dto.BookedProductsDto;
 import ru.yandex.practicum.generated.model.dto.NewProductInWarehouseRequest;
+import ru.yandex.practicum.generated.model.dto.ShippedToDeliveryRequest;
 import ru.yandex.practicum.generated.model.dto.ShoppingCartDto;
 
 public interface WarehouseService {
@@ -22,4 +23,6 @@ public interface WarehouseService {
     AddressDto getWarehouseAddress();
 
     void newProductInWarehouse(NewProductInWarehouseRequest newProductInWarehouseRequest);
+
+    void shippedToDelivery(ShippedToDeliveryRequest shippedToDeliveryRequest);
 }
